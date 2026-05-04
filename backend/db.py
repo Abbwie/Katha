@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.orm import sessionmaker, declarative_base
 from dotenv import load_dotenv
 import os
@@ -22,6 +22,12 @@ SessionLocal = sessionmaker(
 )
 
 Base = declarative_base()
+
+class User(Base):
+    __tablename__ = "users"
+    id = Column(Integer, primary_key = True, index = True)
+    username = Column(String, unique = True, index = True)
+    hashed_password = Column(String)
 
 def get_db():
     db = SessionLocal()
