@@ -1,8 +1,15 @@
 from fastapi import FastAPI
 from sqlalchemy import create_engine, text
 import os
+from routers.login import router as login_router
+from db import Base, engine
+from models import login
 
 app = FastAPI()
+
+Base.metadata.create_all(bind=engine)
+
+app.include_router(login_router)  
 
 @app.get("/")
 def root():
