@@ -9,7 +9,7 @@ from models import Base as LoginBase, login
 # Create tables if they don't exist
 #LoginBase.metadata.create_all(bind=login_engine)
 
-router = APIRouter()
+router = APIRouter(tags=["Login"])
 
 
 #get login db session
