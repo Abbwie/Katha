@@ -5,8 +5,8 @@ from fastapi import APIRouter, Depends, UploadFile, File, Form, HTTPException
 from sqlalchemy.orm import Session
 
 from db import get_db
-from backend.models import CompatibilityForm
-from backend.services.kathaAI import analyze_compatibility_document
+from models import CompatibilityForm
+from services.kathaAI import analyze_compatibility_document
 
 router = APIRouter(prefix="/compatibility", tags=["Compatibility"])
 
