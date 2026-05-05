@@ -1,7 +1,7 @@
 # app/services/kathaAI.py
 import json
 from openai import OpenAI
-
+#test
 
 client = OpenAI()
 
