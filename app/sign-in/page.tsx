@@ -408,6 +408,17 @@ export default function SignInPage() {
                         'Sign In'
                       )}
                     </Button>
+
+                    <p className="text-sm text-center text-muted-foreground">
+                      {"Don't have an account?"}{' '}
+                      <button
+                        type="button"
+                        onClick={() => setActiveTab('signup')}
+                        className="text-accent hover:underline font-medium"
+                      >
+                        Sign Up
+                      </button>
+                    </p>
                   </form>
                 </TabsContent>
 
@@ -492,25 +503,42 @@ export default function SignInPage() {
                       </div>
                     </div>
 
-                    <div className="flex items-start space-x-2">
+                    <div className="flex items-start space-x-3">
                       <Checkbox
                         id="terms"
                         checked={signUpData.agreeToTerms}
                         onCheckedChange={(checked) =>
                           setSignUpData({ ...signUpData, agreeToTerms: checked as boolean })
                         }
-                        className="mt-0.5"
+                        className="mt-1"
                       />
-                      <Label htmlFor="terms" className="text-sm font-normal cursor-pointer leading-relaxed">
-                        I agree to the{' '}
+                      <div className="text-sm font-normal leading-relaxed">
+                        <label 
+                          htmlFor="terms" 
+                          className="cursor-pointer"
+                          onClick={(e) => {
+                            // Only toggle if not clicking a link
+                            if ((e.target as HTMLElement).tagName !== 'A') {
+                              e.preventDefault();
+                              setSignUpData({ ...signUpData, agreeToTerms: !signUpData.agreeToTerms });
+                            }
+                          }}
+                        >
+                          I agree to the{' '}
+                        </label>
                         <Link href="/terms" className="text-accent hover:underline">
                           Terms of Service
                         </Link>{' '}
-                        and{' '}
+                        <span 
+                          className="cursor-pointer"
+                          onClick={() => setSignUpData({ ...signUpData, agreeToTerms: !signUpData.agreeToTerms })}
+                        >
+                          and{' '}
+                        </span>
                         <Link href="/privacy" className="text-accent hover:underline">
                           Privacy Policy
                         </Link>
-                      </Label>
+                      </div>
                     </div>
 
                     <Button
@@ -527,6 +555,17 @@ export default function SignInPage() {
                         'Create Account'
                       )}
                     </Button>
+
+                    <p className="text-sm text-center text-muted-foreground">
+                      Already have an account?{' '}
+                      <button
+                        type="button"
+                        onClick={() => setActiveTab('signin')}
+                        className="text-accent hover:underline font-medium"
+                      >
+                        Sign In
+                      </button>
+                    </p>
                   </form>
                 </TabsContent>
               </Tabs>
