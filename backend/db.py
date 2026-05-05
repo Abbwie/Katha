@@ -1,3 +1,5 @@
+import string
+
 from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime, ForeignKey, Boolean, Float, func
 from sqlalchemy.orm import sessionmaker, declarative_base
 import os
@@ -77,6 +79,19 @@ class Review(Base):
     rating = Column(Integer)
     comment = Column(Text)
     create_time = Column(DateTime(timezone = True), server_default = func.now())
+
+class CompatibilityForm(Base):
+    __tablename__ = "compatibility_forms"
+    id = Column(Integer, primary_key = True, index = True)
+    client_id = Column(Integer, ForeignKey("login.id"))
+    provider_id = Column(Integer, ForeignKey("login.id"))
+    file_upload = Column (String(255), nullable= True)
+    user_comments = Column (Text, nullable = True)
+    ai_comments = Column (Text, nullable = True)
+    store_suggested = Column (Text, nullable = True)
+    status = Column(String(50), nullable = False, default = "Pending")
+    total_tokens_used = Column (Integer, nullable = False, default =  0)
+    created_at = Column (DateTime(timezone = True), server_default = func.now(), nullable = False)
 
 def get_db():
     db = SessionLocal()
