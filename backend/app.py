@@ -4,7 +4,7 @@ import os
 from routers.login import router as login_router
 from db import Base, engine
 from models import login
-from backend.routers.compatibility import router as compatibility_router
+from routers.compatibility import router as compatibility_router
 
 
 app = FastAPI()
