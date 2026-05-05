@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Network, Mail, Lock, Eye, EyeOff, User, ArrowLeft } from 'lucide-react';
+import Image from 'next/image';
+import { Mail, Lock, Eye, EyeOff, User, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -13,7 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function SignInPage() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<'signin' | 'signup'>('signin');
+  const [activeTab, setActiveTab] = useState<'signin' | 'signup'>('signup');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -239,7 +240,13 @@ export default function SignInPage() {
         <div className="relative z-10 flex flex-col justify-between p-12 text-sidebar-foreground">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <Network className="w-8 h-8" />
+            <Image
+              src="/images/katha-logo.png"
+              alt="Katha Logo"
+              width={32}
+              height={32}
+              className="w-8 h-8 object-contain"
+            />
             <span className="text-2xl font-bold">Katha</span>
           </Link>
 
@@ -300,7 +307,13 @@ export default function SignInPage() {
         <div className="w-full max-w-md relative z-10">
           {/* Mobile Logo */}
           <Link href="/" className="flex items-center gap-2 mb-8 lg:hidden">
-            <Network className="w-6 h-6 text-accent" />
+            <Image
+              src="/images/katha-logo.png"
+              alt="Katha Logo"
+              width={24}
+              height={24}
+              className="w-6 h-6 object-contain"
+            />
             <span className="text-xl font-bold text-foreground">Katha</span>
           </Link>
 
