@@ -4,11 +4,14 @@ import os
 from routers.login import router as login_router
 from db import Base, engine
 from models import login
+from routers.compatibility import router as compatibility_router
+
 
 app = FastAPI()
 
 Base.metadata.create_all(bind=engine)
 
+app.include_router(compatibility_router)
 app.include_router(login_router)  
 
 @app.get("/")
