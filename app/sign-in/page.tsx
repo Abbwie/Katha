@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Network, Mail, Lock, Eye, EyeOff, User, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -11,6 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function SignInPage() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<'signin' | 'signup'>('signin');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -42,8 +44,29 @@ export default function SignInPage() {
     setIsLoading(true);
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1500));
+    
+    // Check if user registered previously to get their full name
+    const registeredUser = localStorage.getItem('kathaRegisteredUser');
+    let userName = signInData.email.split('@')[0]; // Default to email prefix
+    
+    if (registeredUser) {
+      const parsed = JSON.parse(registeredUser);
+      if (parsed.email === signInData.email) {
+        userName = parsed.name;
+      }
+    }
+    
+    // Store user data in localStorage
+    const userData = {
+      email: signInData.email,
+      name: userName,
+      isLoggedIn: true,
+    };
+    localStorage.setItem('kathaUser', JSON.stringify(userData));
+    
     setIsLoading(false);
-    // Handle sign in logic here
+    // Redirect to homepage
+    router.push('/');
   };
 
   const handleSignUp = async (e: React.FormEvent) => {
@@ -56,7 +79,24 @@ export default function SignInPage() {
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1500));
     setIsLoading(false);
-    // Handle sign up logic here
+    
+    // Store the user's name for later use during sign-in
+    localStorage.setItem('kathaRegisteredUser', JSON.stringify({
+      name: signUpData.fullName,
+      email: signUpData.email,
+    }));
+    
+    // Clear the sign-up form
+    setSignUpData({
+      fullName: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+      agreeToTerms: false,
+    });
+    
+    // Switch to sign-in tab
+    setActiveTab('signin');
   };
 
   const handleForgotPassword = async (e: React.FormEvent) => {

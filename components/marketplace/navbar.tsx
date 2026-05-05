@@ -1,17 +1,40 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { Menu, X, Moon, Sun, Sparkles } from 'lucide-react';
+import { Menu, X, Moon, Sun, Sparkles, LogOut, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTheme } from 'next-themes';
 import { KathaAIModal } from './katha-ai-modal';
 
+interface UserData {
+  email: string;
+  name: string;
+  isLoggedIn: boolean;
+}
+
 export function Navbar() {
+  const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showAIModal, setShowAIModal] = useState(false);
+  const [user, setUser] = useState<UserData | null>(null);
   const { theme, setTheme } = useTheme();
+
+  useEffect(() => {
+    // Check for logged in user on mount
+    const storedUser = localStorage.getItem('kathaUser');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('kathaUser');
+    setUser(null);
+    router.refresh();
+  };
 
   return (
     <nav className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -67,12 +90,32 @@ export function Navbar() {
               )}
             </Button>
 
-            {/* Sign In Button */}
-            <Link href="/sign-in" className="hidden sm:inline-flex">
-              <Button variant="outline" className="rounded-full">
-                Sign In
-              </Button>
-            </Link>
+            {/* User Info or Sign In Button */}
+            {user ? (
+              <div className="hidden sm:flex items-center gap-3">
+                <div className="flex items-center gap-2 text-sm">
+                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                    <User className="w-4 h-4 text-primary" />
+                  </div>
+                  <span className="font-medium text-foreground">{user.name}</span>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleLogout}
+                  className="rounded-full gap-1.5"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  Logout
+                </Button>
+              </div>
+            ) : (
+              <Link href="/sign-in" className="hidden sm:inline-flex">
+                <Button variant="outline" className="rounded-full">
+                  Sign In
+                </Button>
+              </Link>
+            )}
 
             {/* Mobile Menu Button */}
             <Button
@@ -121,11 +164,33 @@ export function Navbar() {
               <Sparkles className="w-3.5 h-3.5 mr-1.5" />
               KathaAI Assistant
             </Button>
-            <Link href="/sign-in" onClick={() => setMobileMenuOpen(false)}>
-              <Button variant="outline" className="w-full rounded-full">
-                Sign In
-              </Button>
-            </Link>
+            {user ? (
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 py-2">
+                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                    <User className="w-4 h-4 text-primary" />
+                  </div>
+                  <span className="font-medium text-foreground">{user.name}</span>
+                </div>
+                <Button
+                  variant="outline"
+                  className="w-full rounded-full gap-1.5"
+                  onClick={() => {
+                    handleLogout();
+                    setMobileMenuOpen(false);
+                  }}
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  Logout
+                </Button>
+              </div>
+            ) : (
+              <Link href="/sign-in" onClick={() => setMobileMenuOpen(false)}>
+                <Button variant="outline" className="w-full rounded-full">
+                  Sign In
+                </Button>
+              </Link>
+            )}
           </div>
         )}
       </div>
