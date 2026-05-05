@@ -48,7 +48,7 @@ export const mockProviders: Provider[] = [
   },
   {
     id: '2',
-    name: 'Philippine Circuit Labs',
+    name: 'Philippine Circuit Labs by Khaled',
     image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=300&fit=crop',
     category: 'pcb',
     location: 'Quezon City, Metro Manila',
