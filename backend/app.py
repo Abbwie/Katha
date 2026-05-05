@@ -4,11 +4,14 @@ import os
 from routers.login import router as login_router
 from db import Base, engine
 from models import login
+from routers.kathaAI import router as kathaAI_router
+
 
 app = FastAPI()
 
 Base.metadata.create_all(bind=engine)
 
+app.include_router(kathaAI_router)
 app.include_router(login_router)  
 
 @app.get("/")
