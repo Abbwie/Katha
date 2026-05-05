@@ -1,8 +1,12 @@
-from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime, ForeignKey, Boolean, Float, func
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime, ForeignKey, Boolean, Float
+from sqlalchemy.sql import func
+from sqlalchemy.orm import sessionmaker, declarative_base, relationship
+from dotenv import load_dotenv
+from pathlib import Path
 import os
 
-
+env_path = Path(__file__).parent / ".env"
+load_dotenv(dotenv_path=env_path, override=True)
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
@@ -31,6 +35,7 @@ class User(Base):
     email = Column(String, nullable = True)
     location = Column(String, nullable = True)
     is_provider = Column(Boolean, default = False)
+    provider_profile = relationship("ProviderProfile", back_populates="user")
 
 class Quote(Base):
     __tablename__ = "quotes"
@@ -77,6 +82,29 @@ class Review(Base):
     rating = Column(Integer)
     comment = Column(Text)
     create_time = Column(DateTime(timezone = True), server_default = func.now())
+
+class ProviderProfile(Base):
+    __tablename__ = "provider_profiles"
+    id = Column(Integer, primary_key = True, index = True)
+    user_id = Column(Integer, ForeignKey("login.id"), unique = True)
+
+    business_name = Column(String)
+    business_address = Column(String)
+    business_phone = Column(String)
+    business_email = Column(String)
+    business_registration_number = Column(String, nullable = True)
+
+    is_verified = Column(Boolean, default = False)
+    verification_documents_url = Column(String, nullable = True)
+
+    description = Column(Text, nullable=True)
+    capabilities = Column(Text, nullable=True) #service
+    min_order = Column(Float)
+    max_order = Column(Float)
+
+    is_active = Column(Boolean, default=True)
+
+    user = relationship("User", back_populates = "provider_profile")
 
 def get_db():
     db = SessionLocal()
