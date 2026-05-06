@@ -3,7 +3,7 @@ from sqlalchemy import create_engine, text
 import os
 from routers.login import router as login_router
 from db import Base, engine, get_db, ensure_schema
-from models import login
+# from models import login
 # from routers.compatibility import router as compatibility_router
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
