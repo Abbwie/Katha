@@ -5,11 +5,6 @@ from openai import OpenAI
 client = OpenAI()
 
 def analyze_compatibility_document(file_path: str, user_prompt: str):
-    import base64
-    import json
-    from openai import OpenAI
-
-    client = OpenAI()
 
     with open(file_path, "rb") as f:
         base64_image = base64.b64encode(f.read()).decode("utf-8")
@@ -17,7 +12,7 @@ def analyze_compatibility_document(file_path: str, user_prompt: str):
     prompt = f"""
 You are Katha AI.
 
-Return ONLY valid JSON.
+Return ONLY valid JSON. No explanation.
 
 Schema:
 {{
@@ -37,9 +32,11 @@ User request:
                 "role": "user",
                 "content": [
                     {"type": "input_text", "text": prompt},
+
+                    
                     {
                         "type": "input_image",
-                        "image_url": f"data:image/png;base64,{base64_image}"
+                        "image_base64": base64_image
                     }
                 ]
             }]
@@ -47,24 +44,21 @@ User request:
 
         text_output = response.output_text or ""
 
-        print("RAW KATHAAI OUTPUT:", text_output)  
+        print("RAW KATHAAI OUTPUT:", repr(text_output))  
+
+        if not text_output.strip():
+            raise ValueError("Empty AI response (image likely not processed)")
 
         parsed = json.loads(text_output)
-
-        total_tokens = 0
-        if getattr(response, "usage", None):
-            total_tokens = response.usage.total_tokens or 0
 
         return {
             "ai_comments": parsed.get("ai_comments", ""),
             "needed_items": parsed.get("needed_items", []),
             "shops": parsed.get("shops", []),
-            "total_tokens_used": total_tokens
+            "total_tokens_used": getattr(response, "usage", None).total_tokens if response.usage else 0
         }
 
     except Exception as e:
-        print("AI ERROR:", str(e))
-
         return {
             "ai_comments": f"AI failed: {str(e)}",
             "needed_items": [],
