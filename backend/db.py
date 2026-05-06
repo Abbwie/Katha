@@ -37,7 +37,7 @@ class User(Base):
     email = Column(String, nullable = True)
     location = Column(String, nullable = True)
     is_provider = Column(Boolean, default = False)
-    provider_profile = relationship("ProviderProfile", back_populates="user")
+    # provider_profile = relationship("ProviderProfile", back_populates="user")
 
 class Quote(Base):
     __tablename__ = "quotes"
@@ -119,8 +119,23 @@ class ProviderProfile(Base):
 
     is_active = Column(Boolean, default=True)
 
-    user = relationship("User", back_populates = "provider_profile")
+    # user = relationship("User", back_populates = "provider_profile")
 
+# backend/db.py - add this function
+
+def ensure_schema():
+    """Auto-add missing columns to existing tables"""
+    from sqlalchemy import inspect, text
+    
+    inspector = inspect(engine)
+    existing_columns = [col['name'] for col in inspector.get_columns('users')]
+    
+    with engine.connect() as conn:
+        if 'username' not in existing_columns:
+            print("Adding username column...")
+            conn.execute(text("ALTER TABLE users ADD COLUMN username VARCHAR(255)"))
+            conn.commit()
+            
 def get_db():
     db = SessionLocal()
     try:
