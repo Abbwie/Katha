@@ -118,7 +118,7 @@ class CompatibilityForm(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"))
     client_id = Column(Integer, ForeignKey("users.id"))
-    file_upload = Column(String(255), nullable=false)
+    file_upload = Column(String(255), nullable=False)
     user_comments = Column(Text, nullable=True)
     ai_comments = Column(Text, nullable=True)
     store_suggested = Column(Text, nullable=True)
