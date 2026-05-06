@@ -1,6 +1,6 @@
 
 from sqlalchemy.orm import Session
-from models import User, ProviderProfile, Service
+from db import User, ProviderProfile, Service
 
 def match_stores_to_ai_suggestions(db: Session, ai_shops: list) -> list:
     providers = db.query(User).filter(User.is_provider == True).all()
