@@ -62,7 +62,7 @@ const handleSignIn = async (e: React.FormEvent) => {
       localStorage.setItem('username', data.username || '');
       localStorage.setItem('full_name', data.full_name || '');
       alert(`Welcome ${data.full_name || data.email}!`);
-      window.location.href = '/';
+      window.location.href = '/dashboard';
     } else {
       alert(data.detail || 'Login failed');
     }
