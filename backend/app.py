@@ -16,6 +16,7 @@ app = FastAPI()
 #-- CORS setup
 origins = [
     "http://localhost:3000",
+    "https://v0-katha-delta.vercel.app",
     os.getenv("CORS_ORIGINS", ""),
 ]
 

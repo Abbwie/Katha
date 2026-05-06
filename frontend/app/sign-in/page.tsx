@@ -47,7 +47,7 @@ const handleSignIn = async (e: React.FormEvent) => {
   setIsLoading(true);
   
   try {
-    const response = await fetch('http://localhost:8080/Katha_Login', {
+    const response = await fetch(`{API_URL}/Katha_Login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
@@ -86,7 +86,7 @@ const handleSignUp = async (e: React.FormEvent) => {
   setIsLoading(true);
   
   try {
-    const response = await fetch('http://localhost:8080/register', {
+    const response = await fetch(`{API_URL}/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
