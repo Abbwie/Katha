@@ -26,6 +26,7 @@ export default function SignInPage() {
 
   // Sign Up form state
   const [signUpData, setSignUpData] = useState({
+    username: '',    // Add this
     fullName: '',
     email: '',
     password: '',
@@ -37,27 +38,84 @@ export default function SignInPage() {
   const [forgotEmail, setForgotEmail] = useState('');
   const [forgotEmailSent, setForgotEmailSent] = useState(false);
 
-  const handleSignIn = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setIsLoading(false);
-    // Handle sign in logic here
-  };
-
-  const handleSignUp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (signUpData.password !== signUpData.confirmPassword) {
-      alert('Passwords do not match');
-      return;
+const handleSignIn = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setIsLoading(true);
+  
+  try {
+    const response = await fetch('http://localhost:8000/Katha_Login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        email: signInData.email,  // Use email
+        password: signInData.password 
+      }),
+    });
+    
+    const data = await response.json();
+    
+    if (response.ok) {
+      localStorage.setItem('user_id', data.user_id);
+      localStorage.setItem('email', data.email);
+      localStorage.setItem('username', data.username || '');
+      localStorage.setItem('full_name', data.full_name || '');
+      alert(`Welcome ${data.full_name || data.email}!`);
+      window.location.href = '/';
+    } else {
+      alert(data.detail || 'Login failed');
     }
-    setIsLoading(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+  } catch (error) {
+    console.error('Login error:', error);
+    alert('Cannot connect to backend. Make sure it\'s running on port 8000');
+  } finally {
     setIsLoading(false);
-    // Handle sign up logic here
-  };
+  }
+};
+
+const handleSignUp = async (e: React.FormEvent) => {
+  e.preventDefault();
+  if (signUpData.password !== signUpData.confirmPassword) {
+    alert('Passwords do not match');
+    return;
+  }
+  
+  setIsLoading(true);
+  
+  try {
+    const response = await fetch('http://localhost:8000/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        username: signUpData.username,
+        email: signUpData.email,
+        password: signUpData.password,
+        full_name: signUpData.fullName
+      }),
+    });
+    
+    const data = await response.json();
+    
+    if (response.ok) {
+      alert('Registration successful! Please sign in.');
+      setActiveTab('signin');
+      setSignUpData({ 
+        username: '',
+        fullName: '', 
+        email: '', 
+        password: '', 
+        confirmPassword: '', 
+        agreeToTerms: false 
+      });
+    } else {
+      alert(data.detail || 'Registration failed');
+    }
+  } catch (error) {
+    console.error('Registration error:', error);
+    alert('Cannot connect to backend. Make sure it\'s running on port 8000');
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -361,6 +419,21 @@ export default function SignInPage() {
                 {/* Sign Up Tab */}
                 <TabsContent value="signup" className="space-y-4">
                   <form onSubmit={handleSignUp} className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-username">Username *</Label>
+                      <div className="relative">
+                        <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Input
+                          id="signup-username"
+                          type="text"
+                          placeholder="Choose a username"
+                          className="pl-10"
+                          value={signUpData.username}
+                          onChange={(e) => setSignUpData({ ...signUpData, username: e.target.value })}
+                          required
+                        />
+                      </div>
+                    </div>
                     <div className="space-y-2">
                       <Label htmlFor="signup-name">Full Name</Label>
                       <div className="relative">

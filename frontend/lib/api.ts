@@ -24,25 +24,32 @@ export const api = {
 
   // ============ AUTHENTICATION ============
   
-  // Register new user
-  async register(username: string, password: string) {
-    const res = await fetch(`${API_BASE}/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password }),
-    });
-    return res.json();
-  },
+  // frontend/lib/api.ts
 
-  // Login user
-  async login(username: string, password: string) {
-    const res = await fetch(`${API_BASE}/Katha_Login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password }),
-    });
-    return res.json();
-  },
+async register(email: string, password: string, fullName?: string) {
+  const res = await fetch(`${API_BASE}/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ 
+      email: email,
+      password: password,
+      full_name: fullName 
+    }),
+  });
+  return res.json();
+},
+
+async login(email: string, password: string) {
+  const res = await fetch(`${API_BASE}/Katha_Login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ 
+      email: email,
+      password: password 
+    }),
+  });
+  return res.json();
+},
 
   // Get all users (admin/test only)
   async getUsers() {
