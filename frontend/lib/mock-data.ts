@@ -66,7 +66,7 @@ export const mockProviders: Provider[] = [
   {
     id: '3',
     name: 'Abbys CAD Solutions',
-    image: '/images/cadsolutions.jpeg',
+    image: '/images/cadsolution.jpeg',
     category: 'cad',
     location: 'BGC, Taguig',
     coordinates: { lat: 14.5503, lng: 121.0462 },
