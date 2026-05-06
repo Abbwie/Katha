@@ -38,12 +38,16 @@ export default function SignInPage() {
   const [forgotEmail, setForgotEmail] = useState('');
   const [forgotEmailSent, setForgotEmailSent] = useState(false);
 
+const API_URL = typeof window !== 'undefined' && window.location.hostname === 'localhost'
+  ? 'http://localhost:8080'
+  : 'https://katha-production-0e45.up.railway.app';
+
 const handleSignIn = async (e: React.FormEvent) => {
   e.preventDefault();
   setIsLoading(true);
   
   try {
-    const response = await fetch('http://localhost8080/Katha_Login', {
+    const response = await fetch('http://localhost:8080/Katha_Login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
