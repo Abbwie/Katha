@@ -32,7 +32,7 @@ export const mockProviders: Provider[] = [
   {
     id: '1',
     name: 'MakerHub Manila',
-    image: '/images/fabricationhib.jpg',
+    image: '/images/fabricationhub.jpg',
     category: 'printing',
     location: 'Makati, Metro Manila',
     coordinates: { lat: 14.5547, lng: 121.0244 },
