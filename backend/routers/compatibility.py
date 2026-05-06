@@ -22,11 +22,12 @@ async def submit_compatibility_form(
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
 ):
+    
     file_path = os.path.join(UPLOAD_DIR, file.filename)
-
     with open(file_path, "wb") as f:
         f.write(await file.read())
 
+    
     record = CompatibilityForm(
         user_id=user_id,
         file_upload=file_path,
@@ -38,32 +39,45 @@ async def submit_compatibility_form(
     db.commit()
     db.refresh(record)
 
+    ai_result = {"needed_items": [], "shops": []}
+
     try:
+        
         ai_result = analyze_compatibility_document(
             file_path=file_path,
             user_prompt=user_comments
         )
 
-        #match ai suggestions
+      
         matched_stores = match_stores_to_ai_suggestions(db, ai_result["shops"])
 
+        
         record.ai_comments = ai_result["ai_comments"]
-        record.store_suggested = json.dumps(matched_stores)  # ← now saves full store data
+        record.store_suggested = json.dumps(matched_stores)
         record.total_tokens_used = ai_result["total_tokens_used"]
         record.status = "completed"
 
     except Exception as e:
-        record.ai_comments = str(e)
+        print(f"[Compatibility ERROR]: {str(e)}")
+        db.rollback()                        # ← reset broken session
+
+        # Re-fetch after rollback
+        record = db.query(CompatibilityForm).filter(
+            CompatibilityForm.id == record.id
+        ).first()
+
+        record.ai_comments = f"Error: {str(e)[:300]}"
         record.status = "failed"
 
-    db.commit()
-    db.refresh(record)
+    finally:
+        db.commit()     
+        db.refresh(record)
 
     return {
         "id": record.id,
         "status": record.status,
         "ai_comments": record.ai_comments,
-        "needed_items": ai_result.get("needed_items", []) if record.status == "completed" else [],
+        "needed_items": ai_result.get("needed_items", []),
         "store_suggested": json.loads(record.store_suggested) if record.store_suggested else [],
         "total_tokens_used": record.total_tokens_used,
     }
