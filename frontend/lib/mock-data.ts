@@ -65,7 +65,7 @@ export const mockProviders: Provider[] = [
   },
   {
     id: '3',
-    name: 'Abbys CAD Solutions',
+    name: 'Taguig CAD Solutions',
     image: '/images/cadsolution.jpeg',
     category: 'cad',
     location: 'BGC, Taguig',
@@ -82,7 +82,7 @@ export const mockProviders: Provider[] = [
   },
   {
     id: '4',
-    name: 'Ishis CutPoint Laser Services',
+    name: 'CutPoint Laser Services',
     image: '/images/laserservice.jpeg',
     category: 'laser',
     location: 'Pasay City, Metro Manila',
@@ -116,7 +116,7 @@ export const mockProviders: Provider[] = [
   },
   {
     id: '6',
-    name: 'Ashleys ElectroAssembly Solutions',
+    name: 'Las Pinas ElectroAssembly Solutions',
     image: '/images/electroassembly.jpeg',
     category: 'assembly',
     location: 'Las Pinas, Metro Manila',
@@ -133,7 +133,7 @@ export const mockProviders: Provider[] = [
   },
   {
     id: '7',
-    name: ' Abby Cebu 3D Innovations',
+    name: ' Cebu 3D Innovations',
     image: '/images/cebu3d.jpg',
     category: 'printing',
     location: 'Cebu City',
@@ -150,7 +150,7 @@ export const mockProviders: Provider[] = [
   },
   {
     id: '8',
-    name: ' Khaled IloiloTech PCB Works',
+    name: 'IloiloTech PCB Works',
     image: '/images/PCBwork.jpg',
     category: 'pcb',
     location: 'Iloilo City',
@@ -167,7 +167,7 @@ export const mockProviders: Provider[] = [
   },
   {
     id: '9',
-    name: ' Ishi Designer Consultant',
+    name: 'Taguig Designer Consultant',
     image: '/images/designconsultant.jpg',
     category: 'cad',
     location: 'Ortigas, Metro Manila',
@@ -184,7 +184,7 @@ export const mockProviders: Provider[] = [
   },
   {
     id: '10',
-    name: 'Ashleys Laguna Fabrication Hub',
+    name: 'Laguna Fabrication Hub',
     image: '/images/fabricationhub.jpg',
     category: 'machining',
     location: 'Santa Rosa, Laguna',
