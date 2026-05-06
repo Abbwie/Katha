@@ -43,7 +43,7 @@ const handleSignIn = async (e: React.FormEvent) => {
   setIsLoading(true);
   
   try {
-    const response = await fetch('http://localhost:8000/Katha_Login', {
+    const response = await fetch('http://localhost8080/Katha_Login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
@@ -66,7 +66,7 @@ const handleSignIn = async (e: React.FormEvent) => {
     }
   } catch (error) {
     console.error('Login error:', error);
-    alert('Cannot connect to backend. Make sure it\'s running on port 8000');
+    alert('Cannot connect to backend. Make sure it\'s running on port 8080');
   } finally {
     setIsLoading(false);
   }
@@ -82,7 +82,7 @@ const handleSignUp = async (e: React.FormEvent) => {
   setIsLoading(true);
   
   try {
-    const response = await fetch('http://localhost:8000/register', {
+    const response = await fetch('http://localhost:8080/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
@@ -111,7 +111,7 @@ const handleSignUp = async (e: React.FormEvent) => {
     }
   } catch (error) {
     console.error('Registration error:', error);
-    alert('Cannot connect to backend. Make sure it\'s running on port 8000');
+    alert('Cannot connect to backend. Make sure it\'s running on port 8080');
   } finally {
     setIsLoading(false);
   }
