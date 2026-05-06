@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Menu, X, Moon, Sun, Sparkles } from 'lucide-react';
+import { Menu, X, Moon, Sun, Sparkles, User, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTheme } from 'next-themes';
 import { KathaAIModal } from './katha-ai-modal';
@@ -11,7 +11,22 @@ import { KathaAIModal } from './katha-ai-modal';
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showAIModal, setShowAIModal] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userName, setUserName] = useState('');
   const { theme, setTheme } = useTheme();
+
+  // Check login status when component mounts
+  useEffect(() => {
+    const userId = localStorage.getItem('user_id');
+    const name = localStorage.getItem('full_name') || localStorage.getItem('username') || localStorage.getItem('email');
+    setIsLoggedIn(!!userId);
+    setUserName(name || '');
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.clear();
+    window.location.href = '/';
+  };
 
   return (
     <nav className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -67,12 +82,32 @@ export function Navbar() {
               )}
             </Button>
 
-            {/* Sign In Button */}
-            <Link href="/sign-in" className="hidden sm:inline-flex">
-              <Button variant="outline" className="rounded-full">
-                Sign In
-              </Button>
-            </Link>
+            {/* Auth Section - Changes based on login status */}
+            {isLoggedIn ? (
+              <div className="hidden sm:flex items-center gap-3">
+                <Link href="/dashboard">
+                  <Button variant="ghost" size="sm" className="gap-2 rounded-full">
+                    <User className="w-4 h-4" />
+                    <span className="hidden lg:inline">{userName}</span>
+                  </Button>
+                </Link>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={handleLogout}
+                  className="rounded-full gap-2"
+                >
+                  <LogOut className="w-4 h-4" />
+                  Logout
+                </Button>
+              </div>
+            ) : (
+              <Link href="/sign-in" className="hidden sm:inline-flex">
+                <Button variant="outline" className="rounded-full">
+                  Sign In
+                </Button>
+              </Link>
+            )}
 
             {/* Mobile Menu Button */}
             <Button
@@ -121,11 +156,32 @@ export function Navbar() {
               <Sparkles className="w-3.5 h-3.5 mr-1.5" />
               KathaAI Assistant
             </Button>
-            <Link href="/sign-in" onClick={() => setMobileMenuOpen(false)}>
-              <Button variant="outline" className="w-full rounded-full">
-                Sign In
-              </Button>
-            </Link>
+            
+            {/* Mobile Auth Section */}
+            {isLoggedIn ? (
+              <>
+                <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)}>
+                  <Button variant="outline" className="w-full rounded-full gap-2">
+                    <User className="w-4 h-4" />
+                    Dashboard
+                  </Button>
+                </Link>
+                <Button 
+                  variant="outline" 
+                  className="w-full rounded-full gap-2"
+                  onClick={handleLogout}
+                >
+                  <LogOut className="w-4 h-4" />
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <Link href="/sign-in" onClick={() => setMobileMenuOpen(false)}>
+                <Button variant="outline" className="w-full rounded-full">
+                  Sign In
+                </Button>
+              </Link>
+            )}
           </div>
         )}
       </div>
