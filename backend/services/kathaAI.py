@@ -13,19 +13,20 @@ def analyze_compatibility_document(file_path: str, user_prompt: str):
     prompt = f"""
 You are Katha AI.
 
+IMPORTANT:
+RETURN ONLY VALID JSON
+
+Schema:
+{{
+    "ai_comments": string,  
+    "needed_items": array altough optional
+    "shops": array of objects {{ "name": string, "reason": string }}
+}}
+
 User request:
 {user_prompt}
 
-Analyze the image and:
-1. Understand what is shown
-2. Identify missing items
-3. Suggest needed items
-4. Recommend shops in Cebu
-Return JSON:
-- ai_comments
-- needed_items
-- shops
-"""
+    """
 
     response = client.responses.create(
         model="gpt-4.1-mini",  
