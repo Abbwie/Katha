@@ -140,16 +140,16 @@ def ensure_schema():
         
         with engine.connect() as conn:
             if 'username' not in existing_columns:
-                print("📝 Adding username column...")
+                print("Adding username column...")
                 conn.execute(text("ALTER TABLE users ADD COLUMN username VARCHAR(255)"))
                 conn.commit()
-                print("✅ Username column added!")
+                print("Username column added!")
             
             if 'hashed_password' not in existing_columns:
-                print("📝 Adding hashed_password column...")
+                print("Adding hashed_password column...")
                 conn.execute(text("ALTER TABLE users ADD COLUMN hashed_password VARCHAR(255)"))
                 conn.commit()
-                print("✅ Hashed_password column added!")
+                print(" Hashed_password column added!")
 
 
 def get_db():
