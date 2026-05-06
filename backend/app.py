@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from fastapi import Depends
 from routers.stores import router as stores_router
-# from routers.compatibility import router as compatibility_router
+from routers.compatibility import router as compatibility_router
 
 
 app = FastAPI()
@@ -35,7 +35,7 @@ ensure_schema()
 
 app.include_router(login_router)  
 app.include_router(stores_router)
-# app.include_router(compatibility_router)  
+app.include_router(compatibility_router)  
 
 @app.get("/")
 def root():
