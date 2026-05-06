@@ -116,6 +116,7 @@ class Review(Base):
 class CompatibilityForm(Base):
     __tablename__ = "compatibility_forms"
     id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
     client_id = Column(Integer, ForeignKey("users.id"))
     file_upload = Column(String(255), nullable=false)
     user_comments = Column(Text, nullable=True)

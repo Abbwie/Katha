@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from db import get_db
 from db import CompatibilityForm
 from services.kathaAI import analyze_compatibility_document
-from services.store_matcher import match_stores_to_ai_suggestions  # ← ADD THIS
+from services.store_matcher import match_stores_to_ai_suggestions  
 
 router = APIRouter(prefix="/compatibility", tags=["Compatibility"])
 
