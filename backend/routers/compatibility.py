@@ -7,11 +7,13 @@ from sqlalchemy.orm import Session
 from db import get_db
 from db import CompatibilityForm
 from services.kathaAI import analyze_compatibility_document
+from services.store_matcher import match_stores_to_ai_suggestions  # ← ADD THIS
 
 router = APIRouter(prefix="/compatibility", tags=["Compatibility"])
 
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
+
 
 @router.post("/submit")
 async def submit_compatibility_form(
@@ -42,8 +44,11 @@ async def submit_compatibility_form(
             user_prompt=user_comments
         )
 
+        #match ai suggestions
+        matched_stores = match_stores_to_ai_suggestions(db, ai_result["shops"])
+
         record.ai_comments = ai_result["ai_comments"]
-        record.store_suggested = json.dumps(ai_result["shops"])
+        record.store_suggested = json.dumps(matched_stores)  # ← now saves full store data
         record.total_tokens_used = ai_result["total_tokens_used"]
         record.status = "completed"
 
@@ -53,6 +58,21 @@ async def submit_compatibility_form(
 
     db.commit()
     db.refresh(record)
+
+    return {
+        "id": record.id,
+        "status": record.status,
+        "ai_comments": record.ai_comments,
+        "needed_items": ai_result.get("needed_items", []) if record.status == "completed" else [],
+        "store_suggested": json.loads(record.store_suggested) if record.store_suggested else [],
+        "total_tokens_used": record.total_tokens_used,
+    }
+
+@router.get("/{form_id}")
+def get_compatibility_result(form_id: int, db: Session = Depends(get_db)):
+    record = db.query(CompatibilityForm).filter(CompatibilityForm.id == form_id).first()
+    if not record:
+        raise HTTPException(status_code=404, detail="Form not found")
 
     return {
         "id": record.id,
