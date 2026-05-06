@@ -1,3 +1,4 @@
+# services/kathaAI.py
 import json
 import os
 import base64
@@ -5,17 +6,13 @@ from openai import OpenAI
 
 client = OpenAI()
 
-
 IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp", ".gif"}
 
 
-def extract_text_from_file(file_path: str) -> str:
-    """Returns extracted text. Returns None for images (handled separately)."""
+def extract_text_from_file(file_path: str):
     ext = os.path.splitext(file_path)[1].lower()
-
     if ext in IMAGE_EXTENSIONS:
-        return None  #
-
+        return None
     elif ext == ".pdf":
         try:
             import fitz
@@ -23,7 +20,6 @@ def extract_text_from_file(file_path: str) -> str:
             return "\n".join([page.get_text() for page in doc])
         except ImportError:
             return "[PDF support requires pymupdf]"
-
     elif ext == ".docx":
         try:
             import docx
@@ -31,13 +27,9 @@ def extract_text_from_file(file_path: str) -> str:
             return "\n".join([p.text for p in doc.paragraphs])
         except ImportError:
             return "[DOCX support requires python-docx]"
-
     else:
-        try:
-            with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
-                return f.read()
-        except Exception as e:
-            return f"[Could not read file: {str(e)}]"
+        with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+            return f.read()
 
 
 def encode_image_to_base64(file_path: str) -> str:
@@ -47,13 +39,9 @@ def encode_image_to_base64(file_path: str) -> str:
 
 def get_image_mime_type(file_path: str) -> str:
     ext = os.path.splitext(file_path)[1].lower()
-    return {
-        ".jpg": "image/jpeg",
-        ".jpeg": "image/jpeg",
-        ".png": "image/png",
-        ".webp": "image/webp",
-        ".gif": "image/gif",
-    }.get(ext, "image/jpeg")
+    return {".jpg": "image/jpeg", ".jpeg": "image/jpeg",
+            ".png": "image/png", ".webp": "image/webp",
+            ".gif": "image/gif"}.get(ext, "image/jpeg")
 
 
 def clean_json_output(raw: str) -> str:
@@ -64,130 +52,123 @@ def clean_json_output(raw: str) -> str:
     return raw
 
 
-def analyze_compatibility_document(file_path: str, user_prompt: str) -> dict:
+def analyze_compatibility_document(
+    file_path: str,
+    user_prompt: str,
+    stores_context: list = []   # ← NEW: real stores passed in
+) -> dict:
+
     ext = os.path.splitext(file_path)[1].lower()
     is_image = ext in IMAGE_EXTENSIONS
 
+    # Build stores list for AI context
+    stores_text = ""
+    if stores_context:
+        store_lines = []
+        for s in stores_context:
+            store_lines.append(
+                f"- Store ID {s['id']}: \"{s['name']}\" | "
+                f"Category: {s['category']} | "
+                f"Location: {s['location']} | "
+                f"Description: {s['description']} | "
+                f"Services: {', '.join(s['services'])}"
+            )
+        stores_text = "\n".join(store_lines)
+    else:
+        stores_text = "No stores available yet."
+
     system_msg = "You are Katha AI. Always respond with valid JSON only. Never use markdown."
 
-    schema_instruction = """
-Return ONLY valid JSON. No explanation. No markdown. No code fences.
+    task_prompt = f"""
+You are Katha AI, the smart assistant of Katha — a Philippine tech services marketplace.
 
-Required schema:
-{
-  "ai_comments": "Your detailed analysis",
-  "needed_items": ["item or service still needed"],
+A user described their problem. Your job is to:
+1. Understand their problem and location.
+2. Look through the available stores below and find the best matches.
+3. Prioritize stores that match the user's location and needs.
+4. Write helpful ai_comments explaining your recommendations.
+
+--- AVAILABLE STORES IN THE MARKETPLACE ---
+{stores_text}
+--- END OF STORES ---
+
+User Request:
+{user_prompt}
+
+Return ONLY valid JSON. No markdown. No explanation outside JSON.
+
+Schema:
+{{
+  "ai_comments": "Your explanation of what the user needs and which stores you recommend and why",
+  "needed_items": ["specific item or service the user needs"],
   "shops": [
-    {"name": "Type of Shop", "reason": "Why this shop is relevant"}
+    {{
+      "store_id": <integer ID from the store list above>,
+      "name": "<exact store name from the list>",
+      "reason": "<why this specific store matches the user's needs>"
+    }}
   ]
-}
+}}
+
+IMPORTANT: Only suggest stores from the list above. Use the exact store_id and name.
+If no stores match, return an empty shops array.
 """
 
     try:
-        
         if is_image:
-            print(f"[KathaAI] Processing image file: {file_path}")
             base64_image = encode_image_to_base64(file_path)
             mime_type = get_image_mime_type(file_path)
-
-            response = client.chat.completions.create(
-                model="gpt-4o-mini",
-                messages=[
-                    {"role": "system", "content": system_msg},
-                    {
-                        "role": "user",
-                        "content": [
-                            {
-                                "type": "text",
-                                "text": f"""
-You are Katha AI for a Philippine tech marketplace.
-
-Look at the image the user uploaded.
-User Request: {user_prompt}
-
-Tasks:
-1. Describe what you see in the image.
-2. Identify what the user might need based on the image + request.
-3. Recommend relevant shop types.
-
-{schema_instruction}
-"""
-                            },
-                            {
-                                "type": "image_url",
-                                "image_url": {
-                                    "url": f"data:{mime_type};base64,{base64_image}",
-                                    "detail": "high"
-                                }
+            messages = [
+                {"role": "system", "content": system_msg},
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": task_prompt},
+                        {
+                            "type": "image_url",
+                            "image_url": {
+                                "url": f"data:{mime_type};base64,{base64_image}",
+                                "detail": "high"
                             }
-                        ]
-                    }
-                ],
-                response_format={"type": "json_object"},
-                temperature=0.3,
-                max_tokens=1000,
-            )
-
-        
+                        }
+                    ]
+                }
+            ]
         else:
-            file_content = extract_text_from_file(file_path)
+            file_content = extract_text_from_file(file_path) or ""
             truncated = file_content[:4000]
-            if len(file_content) > 4000:
-                truncated += "\n... [content truncated]"
-
-            print(f"[KathaAI] Extracted {len(file_content)} chars from {file_path}")
-
-            response = client.chat.completions.create(
-                model="gpt-4o-mini",
-                messages=[
-                    {"role": "system", "content": system_msg},
-                    {
-                        "role": "user",
-                        "content": f"""
-You are Katha AI for a Philippine tech marketplace.
-
+            full_prompt = f"""
 --- DOCUMENT CONTENT ---
 {truncated}
 --- END OF DOCUMENT ---
 
-User Request: {user_prompt}
-
-Tasks:
-1. Analyze the document and user's needs.
-2. Identify missing items or services.
-3. Recommend relevant shop types.
-
-{schema_instruction}
+{task_prompt}
 """
-                    }
-                ],
-                response_format={"type": "json_object"},
-                temperature=0.3,
-                max_tokens=1000,
-            )
+            messages = [
+                {"role": "system", "content": system_msg},
+                {"role": "user", "content": full_prompt}
+            ]
 
-        
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=messages,
+            response_format={"type": "json_object"},
+            temperature=0.3,
+            max_tokens=1000,
+        )
+
         raw_output = response.choices[0].message.content or ""
-        print(f"[KathaAI] Raw output: {repr(raw_output[:200])}")
+        print(f"[KathaAI] Raw: {repr(raw_output[:300])}")
 
-        cleaned = clean_json_output(raw_output)
-        if not cleaned:
-            raise ValueError("Empty response from AI")
-
-        parsed = json.loads(cleaned)
+        parsed = json.loads(clean_json_output(raw_output))
 
         return {
-            "ai_comments": parsed.get("ai_comments", "No comments returned."),
+            "ai_comments": parsed.get("ai_comments", ""),
             "needed_items": parsed.get("needed_items", []),
-            "shops": parsed.get("shops", []),
+            "shops": parsed.get("shops", []),   # now has store_id + name + reason
             "total_tokens_used": response.usage.total_tokens if response.usage else 0,
         }
 
-    except json.JSONDecodeError as e:
-        return {
-            "ai_comments": f"AI returned invalid JSON: {str(e)}",
-            "needed_items": [], "shops": [], "total_tokens_used": 0,
-        }
     except Exception as e:
         print(f"[KathaAI] Error: {str(e)}")
         return {
