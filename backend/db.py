@@ -44,7 +44,7 @@ class User(Base):
 class ProviderProfile(Base):
     __tablename__ = "provider_profiles"
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"), unique=True)
+    user_id = Column(Integer, unique=True)
     business_name = Column(String)
     business_address = Column(String)
     business_phone = Column(String)
