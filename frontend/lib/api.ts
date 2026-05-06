@@ -1,5 +1,5 @@
 // frontend/lib/api.ts
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+const API_BASE = "https://katha-production-0e45.up.railway.app";
 
 export const api = {
   // ============ STORES / PROVIDERS ============
