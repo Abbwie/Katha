@@ -31,7 +31,7 @@ export interface Order {
 export const mockProviders: Provider[] = [
   {
     id: '1',
-    name: 'MakerHub Manila BY ABBBYYYY wdwdw',
+    name: 'MakerHub Manila',
     image: 'https://images.unsplash.com/photo-1581092916550-e323be2ae537?w=400&h=300&fit=crop',
     category: 'printing',
     location: 'Makati, Metro Manila',
