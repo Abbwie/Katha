@@ -13,38 +13,28 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 
 def load_stores_context(db: Session) -> list:
-    """
-    Loads ALL active providers directly from DB with full detail.
-    This is what gets passed to the AI — the richer this is, the better the matching.
-    """
-    providers = db.query(User).filter(User.is_provider == True).all()
+    # TEMPORARY: load ALL users that have a provider profile
+    profiles = db.query(ProviderProfile).filter(
+        ProviderProfile.is_active == True
+    ).all()
+
+    print(f"[DEBUG] Found {len(profiles)} provider profiles")
+
     stores = []
-
-    for provider in providers:
-        profile = db.query(ProviderProfile).filter(
-            ProviderProfile.user_id == provider.id,
-            ProviderProfile.is_active == True
-        ).first()
-        if not profile:
-            continue
-
-        # Skip providers with no useful data
-        if not profile.description and not profile.capabilities and not profile.business_address:
-            continue
-
+    for profile in profiles:
         services = db.query(Service).filter(
-            Service.provider_id == provider.id
+            Service.provider_id == profile.user_id
         ).all()
 
         prices = [s.price for s in services if s.price]
 
         stores.append({
-            "id": provider.id,
-            "name": profile.business_name or provider.username,
+            "id": profile.user_id or profile.id,  # fallback to profile.id
+            "name": profile.business_name or "Unknown Store",
             "category": services[0].category if services else "general",
             "location": profile.business_address or "Philippines",
             "description": profile.description or "",
-            "capabilities": profile.capabilities or "",   # ← key for matching
+            "capabilities": profile.capabilities or "",
             "services": [s.title for s in services[:5] if s.title],
             "price_range_min": min(prices) if prices else 0,
             "price_range_max": max(prices) if prices else 0,
@@ -52,6 +42,7 @@ def load_stores_context(db: Session) -> list:
             "image": "https://images.unsplash.com/photo-1581092916550-e323be2ae537?w=400&h=300&fit=crop",
         })
 
+    print(f"[Stores] Loaded {len(stores)} stores: {[s['name'] for s in stores]}")
     return stores
 
 
