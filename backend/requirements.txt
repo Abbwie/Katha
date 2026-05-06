@@ -7,4 +7,3 @@ pydantic
 openai
 python-multipart
 python-dotenv
-base64
