@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime, ForeignKey, Boolean, Float
-from sqlalchemy.sql import func
+from sqlalchemy.sql import false, func
 from sqlalchemy.orm import sessionmaker, declarative_base, relationship
 from dotenv import load_dotenv
 from pathlib import Path
@@ -117,7 +117,7 @@ class CompatibilityForm(Base):
     __tablename__ = "compatibility_forms"
     id = Column(Integer, primary_key=True, index=True)
     client_id = Column(Integer, ForeignKey("users.id"))
-    file_upload = Column(String(255), nullable=True)
+    file_upload = Column(String(255), nullable=false)
     user_comments = Column(Text, nullable=True)
     ai_comments = Column(Text, nullable=True)
     store_suggested = Column(Text, nullable=True)
