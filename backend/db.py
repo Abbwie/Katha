@@ -116,15 +116,16 @@ class Review(Base):
 class CompatibilityForm(Base):
     __tablename__ = "compatibility_forms"
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
-    client_id = Column(Integer, ForeignKey("users.id"))
-    file_upload = Column(String(255), nullable=false)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    client_id = Column(Integer, ForeignKey("users.id"), nullable=True, index=True)
+    file_upload = Column(String(255), nullable=False)
     user_comments = Column(Text, nullable=True)
     ai_comments = Column(Text, nullable=True)
     store_suggested = Column(Text, nullable=True)
-    status = Column(String(50), nullable=False, default="Pending")
+    status = Column(String(50), nullable=False, default="pending")
     total_tokens_used = Column(Integer, nullable=False, default=0)
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+
 
 
 # ============ DATABASE FUNCTIONS ============
@@ -139,16 +140,16 @@ def ensure_schema():
         
         with engine.connect() as conn:
             if 'username' not in existing_columns:
-                print("📝 Adding username column...")
+                print("Adding username column...")
                 conn.execute(text("ALTER TABLE users ADD COLUMN username VARCHAR(255)"))
                 conn.commit()
-                print("✅ Username column added!")
+                print("Username column added!")
             
             if 'hashed_password' not in existing_columns:
-                print("📝 Adding hashed_password column...")
+                print("Adding hashed_password column...")
                 conn.execute(text("ALTER TABLE users ADD COLUMN hashed_password VARCHAR(255)"))
                 conn.commit()
-                print("✅ Hashed_password column added!")
+                print(" Hashed_password column added!")
 
 
 def get_db():
