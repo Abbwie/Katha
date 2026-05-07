@@ -9,7 +9,9 @@ export function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Grid Layout */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+  
           {/* Brand */}
+        <div className="space-y-4">
           <div className="flex items-center">
             <Image
               src="/images/katha-logo.png"
@@ -19,10 +21,11 @@ export function Footer() {
               className="object-contain"
             />
           </div>
-            <p className="text-sm text-foreground/70">
-              The network connecting Filipino tech professionals with opportunities to create and innovate.
-            </p>
-          </div>
+        
+          <p className="text-sm text-foreground/70">
+            The network connecting Filipino tech professionals with opportunities to create and innovate.
+          </p>
+        </div>
 
           {/* Platform */}
           <div className="space-y-4">
