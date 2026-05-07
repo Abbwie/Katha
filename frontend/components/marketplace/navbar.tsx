@@ -58,11 +58,10 @@ export function Navbar() {
             <Image
               src="/images/katha-logo.png"
               alt="Katha Logo"
-              width={32}
-              height={32}
+              width={70}
+              height={70}
               className="w-8 h-8 object-contain"
             />
-            <span className="text-xl font-bold text-foreground">Katha</span>
           </Link>
 
           {/* Desktop Menu */}
