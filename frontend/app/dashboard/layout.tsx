@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -36,7 +36,7 @@ import { cn } from '@/lib/utils';
 
 const navItems = [
   { href: '/dashboard', label: 'Overview', icon: LayoutDashboard },
-  { href: '/dashboard/services', label: 'Services', icon: Package },
+  { href: '/dashboard/services', label: 'Services', icon: Package, badge: 3 },
   { href: '/dashboard/orders', label: 'Orders', icon: ShoppingCart, badge: 3 },
   { href: '/dashboard/messages', label: 'Messages', icon: MessageSquare, badge: 5 },
   { href: '/dashboard/analytics', label: 'Analytics', icon: BarChart3 },
@@ -50,6 +50,23 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [userName, setUserName] = useState('');
+  const [isProvider, setIsProvider] = useState(false);
+
+  // Load user data from localStorage
+  useEffect(() => {
+  const fullName = localStorage.getItem('full_name');
+  const username = localStorage.getItem('username');
+  const email = localStorage.getItem('email');
+  const providerStatus = localStorage.getItem('is_provider') === 'true';
+  
+  const name = fullName || username || email || 'User';
+  setUserName(name);
+  setIsProvider(providerStatus);
+  
+  console.log('Dashboard layout - userName:', name);
+  console.log('Dashboard layout - isProvider:', providerStatus);
+}, []);
 
   return (
     <div className="min-h-screen bg-background flex">
@@ -126,17 +143,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <div className="flex items-center gap-3">
               <Avatar className="w-10 h-10">
                 <AvatarImage src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop" />
-                <AvatarFallback>MH</AvatarFallback>
+                <AvatarFallback>{userName.charAt(0) || 'U'}</AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate">MakerHub Manila</p>
-                <p className="text-xs text-sidebar-foreground/60 truncate">Professional Plan</p>
-              </div>
+                <p className="text-sm font-medium truncate">{userName}</p>
+                <p className="text-xs text-sidebar-foreground/60 truncate">
+                  {isProvider ? 'Provider Account' : 'Member'}
+                </p>
+            </div>
             </div>
           ) : (
             <Avatar className="w-10 h-10 mx-auto">
               <AvatarImage src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop" />
-              <AvatarFallback>MH</AvatarFallback>
+              <AvatarFallback>{userName.charAt(0) || 'U'}</AvatarFallback>
             </Avatar>
           )}
         </div>
@@ -164,11 +183,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <Menu className="w-5 h-5" />
             </Button>
             <div>
-              <h1 className="text-lg font-semibold text-foreground">Provider Dashboard</h1>
+              <h1 className="text-lg font-semibold text-foreground">
+                {isProvider ? 'Provider Dashboard' : 'My Dashboard'}
+              </h1>
               <p className="text-sm text-muted-foreground hidden sm:block">
-                Welcome back, MakerHub Manila
+                Welcome back, {userName}
               </p>
-            </div>
+          </div>
           </div>
 
           <div className="flex items-center gap-3">
@@ -215,11 +236,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <div className="hidden sm:flex items-center gap-3">
                 <Avatar className="w-9 h-9">
                   <AvatarImage src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop" />
-                  <AvatarFallback>MH</AvatarFallback>
+                  <AvatarFallback>{userName.charAt(0) || 'U'}</AvatarFallback>
                 </Avatar>
                 <div className="hidden md:block">
-                  <p className="text-sm font-medium text-foreground">MakerHub Manila</p>
-                  <p className="text-xs text-muted-foreground">Professional Plan</p>
+                  <p className="text-sm font-medium text-foreground">{userName}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {isProvider ? 'Professional Plan' : 'Member'}
+                  </p>
                 </div>
               </div>
 

@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation'; // Add this import
 import Image from 'next/image';
-import { Menu, X, Moon, Sun, Sparkles, User, LogOut } from 'lucide-react';
+import { Menu, X, Moon, Sun, Sparkles, User, LogOut, Briefcase } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTheme } from 'next-themes';
 import { KathaAIModal } from './katha-ai-modal';
@@ -12,21 +13,41 @@ export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showAIModal, setShowAIModal] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isProvider, setIsProvider] = useState(false);
   const [userName, setUserName] = useState('');
   const { theme, setTheme } = useTheme();
+  const pathname = usePathname();
 
-  // Check login status when component mounts
-  useEffect(() => {
-    const userId = localStorage.getItem('user_id');
-    const name = localStorage.getItem('full_name') || localStorage.getItem('username') || localStorage.getItem('email');
-    setIsLoggedIn(!!userId);
-    setUserName(name || '');
-  }, []);
+  // Check login status whenever the page changes or component mounts
+ useEffect(() => {
+  // Read from localStorage
+  const userId = localStorage.getItem('user_id');
+  const providerStatus = localStorage.getItem('is_provider') === 'true';
+  const fullName = localStorage.getItem('full_name');
+  const username = localStorage.getItem('username');
+  const email = localStorage.getItem('email');
+  
+  // Use full_name first, then username, then email
+  const name = fullName || username || email || 'User';
+  
+  console.log('=== NAVBAR READING STORAGE ===');
+  console.log('full_name from storage:', fullName);
+  console.log('username from storage:', username);
+  console.log('Final name to display:', name);
+  console.log('isProvider:', providerStatus);
+  
+  setIsLoggedIn(!!userId);
+  setIsProvider(providerStatus);
+  setUserName(name);
+}, [pathname]);
 
   const handleLogout = () => {
     localStorage.clear();
     window.location.href = '/';
   };
+
+  // Determine where the user should go
+  const dashboardUrl = isProvider ? '/dashboard/provider' : '/dashboard/user';
 
   return (
     <nav className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -85,9 +106,9 @@ export function Navbar() {
             {/* Auth Section - Changes based on login status */}
             {isLoggedIn ? (
               <div className="hidden sm:flex items-center gap-3">
-                <Link href="/dashboard">
+                <Link href={dashboardUrl}>
                   <Button variant="ghost" size="sm" className="gap-2 rounded-full">
-                    <User className="w-4 h-4" />
+                    {isProvider ? <Briefcase className="w-4 h-4" /> : <User className="w-4 h-4" />}
                     <span className="hidden lg:inline">{userName}</span>
                   </Button>
                 </Link>
@@ -160,9 +181,9 @@ export function Navbar() {
             {/* Mobile Auth Section */}
             {isLoggedIn ? (
               <>
-                <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)}>
+                <Link href={dashboardUrl} onClick={() => setMobileMenuOpen(false)}>
                   <Button variant="outline" className="w-full rounded-full gap-2">
-                    <User className="w-4 h-4" />
+                    {isProvider ? <Briefcase className="w-4 h-4" /> : <User className="w-4 h-4" />}
                     Dashboard
                   </Button>
                 </Link>

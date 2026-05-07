@@ -45,26 +45,47 @@ const handleSignIn = async (e: React.FormEvent) => {
   setIsLoading(true);
   
   try {
-    const response = await fetch("https://katha-production-0e45.up.railway.app/Katha_Login", {
+    // Use the correct API URL
+    const API_URL = 'http://localhost:8080';
+    
+    const response = await fetch(`${API_URL}/Katha_Login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
-        email: signInData.email,  // Use email
+        email: signInData.email,
         password: signInData.password 
       }),
     });
     
     const data = await response.json();
     
+    // STEP 1: Show what the backend returned
+    console.log('=== BACKEND RESPONSE ===');
+    console.log('Full data:', data);
+    console.log('full_name value:', data.full_name);
+    console.log('user_id value:', data.user_id);
+    
     if (response.ok) {
-      localStorage.setItem('user_id', data.user_id);
+      // STEP 2: Store each item
+      localStorage.setItem('user_id', String(data.user_id));
       localStorage.setItem('email', data.email);
       localStorage.setItem('username', data.username || '');
       localStorage.setItem('full_name', data.full_name || '');
-      alert(`Welcome ${data.full_name || data.email}!`);
+      localStorage.setItem('is_provider', String(data.is_provider || false));
+      
+      // STEP 3: Verify storage worked
+      console.log('=== AFTER STORAGE ===');
+      console.log('Stored full_name:', localStorage.getItem('full_name'));
+      console.log('Stored user_id:', localStorage.getItem('user_id'));
+      console.log('Stored username:', localStorage.getItem('username'));
+      
+      // STEP 4: Show success message
+      alert(`Welcome ${data.full_name || data.username || data.email}! Data saved to localStorage.`);
+      
+      // STEP 5: Go to dashboard (uncomment after testing)
       window.location.href = '/dashboard';
     } else {
-      alert(data.detail || 'Login failed');
+      alert('Login failed: ' + (data.detail || 'Unknown error'));
     }
   } catch (error) {
     console.error('Login error:', error);
