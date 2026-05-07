@@ -30,7 +30,7 @@ Katha aims to support local talent, make tech work more visibile, and help grow 
 
 **BIG FEATURE FOR KATHA : KathaAI**
 Katha releases its AI compatibility features for users when they have a specific problem and is in need in finding for the best store recommendation.
-Send AI an image on what you are currently looking for and what type of situation you are dealing with, KathaAI gives you the best suggestion and shops for it
+Send AI an image on what you are currently looking for and what type of situation you are dealing with then KathaAI gives you the best suggestion and shops for it
 so you wont have to manually scroll for shops just for your product.
 Currently it is working well as a prototype with the given providers for now.
   
@@ -42,7 +42,7 @@ Currently it is working well as a prototype with the given providers for now.
 - Hosting Deployement : Railway for backend, Vercel For Frontend
 
 **Future Improvements**
-Katha right now is not perfect but it has a great potential especially in the market right now, here are the things we can expound on later on:
+Katha right now is not perfect but it has a great potential especially in the market , here are the things we can expound on later on:
 - Better and stronger AI-powered recommendations
 - Secure payment integration and authenthication
 - A mobile app
