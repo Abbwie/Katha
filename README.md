@@ -1,8 +1,10 @@
 **Katha - The Network for Every Tech Work**
 
+https://v0-katha-delta.vercel.app/
+
 Katha is a marketplace for Local Filipino tech providers and makers. 
 
-Our team Git It Together, saw how this market in the Philippines is hard to reach and often only seen when someone refers to them.
+Our team Git It Together, saw how this market in the Philippines is hard to reach and often only seen when someone refers it to them.
 Its sad because right now, with the rise of technology and AI, these things are suppose to be in high demand and deemed more accessible. 
 That is one of the reasons why we made Katha.
 
@@ -13,18 +15,17 @@ Katha aims to support local talent, make tech work more visibile, and help grow 
 - Support local Filipino tech providers
 - Improving visibility for skilled professionals in the tech community
 - Making tech services more accessible to wider audience
-- Encouraging growth and collaboration within the local tech ecosyste,
+- Encouraging growth and collaboration within the local tech ecosystem,
 
 
-**Features Of Katha**
-- Login and Register Page
+**Main Features Of Katha**
+- Login and Register Page as a User
 - Browsing Services with Filter Mode
-- Advance User or Business dashboard
-- Register as a provider
-- Messaging and transaction request
-- Order Progress
-- Dark mode and Light mode for Users
-- KathaAI
+- Advance User or Business Dashboard
+- Register as a provider : Once registered, the user can provide their products and services on the platform by setting the location, price range, availability and provided service.
+- Messaging and Transaction request
+- Order Progress Bar
+- KathaAI in beta
 
 
 **BIG FEATURE FOR KATHA : KathaAI**
