@@ -48,5 +48,6 @@ Katha right now is not perfect but it has a great potential especially in the ma
 - A mobile app
 - Strict portofilio verification for providers
 - More categories for providers soon
+- Realistic and no more imaginary data
 
 KATHA : The Network For Every Tech Work, built by Git It Together.
