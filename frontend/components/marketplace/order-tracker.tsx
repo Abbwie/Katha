@@ -193,7 +193,7 @@ export function OrderTracker({ orders, isOpen, onClose }: OrderTrackerProps) {
                       <div>
                         <p className="text-muted-foreground mb-1">Budget</p>
                         <p className="font-medium text-foreground">
-                          ${order.budget}
+                          ₱{order.budget}
                         </p>
                       </div>
                     )}
