@@ -76,5 +76,6 @@ def loginarea(req: LoginRequest, db: Session = Depends(get_db)):
         "user_id": user.id,
         "email": user.email,
         "full_name": user.full_name,
+        "is_provider": user.is_provider,
         "message": "Login successful"
     }

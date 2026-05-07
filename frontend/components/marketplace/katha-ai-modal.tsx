@@ -78,49 +78,76 @@ export function KathaAIModal({ isOpen, onClose }: KathaAIModalProps) {
     onClose();
   };
 
-  const handleSubmit = async () => {
-    if (!prompt.trim()) {
-      setError('Please describe what you are looking for.');
-      return;
+const handleSubmit = async () => {
+  if (!prompt.trim()) {
+    setError('Please describe what you are looking for.');
+    return;
+  }
+
+  setIsLoading(true);
+  setError(null);
+
+  try {
+    const formData = new FormData();
+    const userId = localStorage.getItem('user_id') || '1';
+    formData.append('user_id', userId);
+    formData.append('user_comments', prompt);
+    
+    // Add files if any
+    for (const file of files) {
+      formData.append('file', file);
     }
 
-    setIsLoading(true);
-    setError(null);
+    // IMPORTANT: Use your Railway backend URL (the one that worked in curl)
+    const response = await fetch('https://katha-production-0e45.up.railway.app/compatibility/submit', {
+      method: 'POST',
+      body: formData,
+      // Do NOT set Content-Type header - let browser set it
+    });
 
-    try {
-      // Read file contents if any
-      let fileContents: { name: string; content: string }[] = [];
-      for (const file of files) {
-        if (file.type.startsWith('text/') || file.name.endsWith('.txt') || file.name.endsWith('.md')) {
-          const content = await file.text();
-          fileContents.push({ name: file.name, content });
-        } else {
-          fileContents.push({ name: file.name, content: `[Binary file: ${file.type || 'unknown type'}]` });
-        }
-      }
+    console.log('Response status:', response.status);
 
-      const response = await fetch('/api/katha-ai', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          prompt,
-          files: fileContents,
-        }),
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`HTTP ${response.status}: ${errorText}`);
+    }
+
+    const result = await response.json();
+    console.log('AI Result:', result);
+
+    if (result.status === 'completed') {
+      // Transform the response to match what the UI expects
+      const shops = result.store_suggested || [];
+      
+      setAiResponse({
+        summary: result.ai_comments,
+        recommendations: result.needed_items || [],
+        suggestedCategory: 'general',
+        shops: shops.map((shop: any) => ({
+          id: shop.id,
+          name: shop.name,
+          location: shop.location,
+          rating: 4.5,
+          reviewCount: 0,
+          description: shop.description,
+          services: shop.services || [],
+          priceRange: { min: shop.price_range_min || 0, max: shop.price_range_max || 0 },
+          turnaroundDays: 5,
+          verified: shop.verified,
+          image: shop.image,
+        })),
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to get AI response');
-      }
-
-      const data = await response.json();
-      setAiResponse(data);
-    } catch (err) {
-      setError('Something went wrong. Please try again.');
-      console.error('[v0] KathaAI error:', err);
-    } finally {
-      setIsLoading(false);
+    } else {
+      setError(result.ai_comments || 'AI analysis failed');
     }
-  };
+  } catch (err) {
+    console.error('KathaAI error:', err);
+    const errorMessage = err instanceof Error ? err.message : 'Something went wrong. Please try again.';
+    setError(errorMessage);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>

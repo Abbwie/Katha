@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import Image from 'next/image';
 
 export default function SignInPage() {
   const [activeTab, setActiveTab] = useState<'signin' | 'signup'>('signin');
@@ -38,33 +39,54 @@ export default function SignInPage() {
   const [forgotEmail, setForgotEmail] = useState('');
   const [forgotEmailSent, setForgotEmailSent] = useState(false);
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
-
 const handleSignIn = async (e: React.FormEvent) => {
   e.preventDefault();
   setIsLoading(true);
   
   try {
-    const response = await fetch("https://katha-production-0e45.up.railway.app/Katha_Login", {
+    // Use the correct API URL
+    const API_URL = typeof window !== 'undefined' && window.location.hostname === 'localhost'
+  ? 'http://localhost:8080'
+  : 'https://katha-production-0e45.up.railway.app';
+    
+    const response = await fetch(`${API_URL}/Katha_Login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
-        email: signInData.email,  // Use email
+        email: signInData.email,
         password: signInData.password 
       }),
     });
     
     const data = await response.json();
     
+    // STEP 1: Show what the backend returned
+    console.log('=== BACKEND RESPONSE ===');
+    console.log('Full data:', data);
+    console.log('full_name value:', data.full_name);
+    console.log('user_id value:', data.user_id);
+    
     if (response.ok) {
-      localStorage.setItem('user_id', data.user_id);
+      // STEP 2: Store each item
+      localStorage.setItem('user_id', String(data.user_id));
       localStorage.setItem('email', data.email);
       localStorage.setItem('username', data.username || '');
       localStorage.setItem('full_name', data.full_name || '');
-      alert(`Welcome ${data.full_name || data.email}!`);
+      localStorage.setItem('is_provider', String(data.is_provider || false));
+      
+      // STEP 3: Verify storage worked
+      console.log('=== AFTER STORAGE ===');
+      console.log('Stored full_name:', localStorage.getItem('full_name'));
+      console.log('Stored user_id:', localStorage.getItem('user_id'));
+      console.log('Stored username:', localStorage.getItem('username'));
+      
+      // STEP 4: Show success message
+      alert(`Welcome ${data.full_name || data.username || data.email}!`);
+      
+      // STEP 5: Go to dashboard (uncomment after testing)
       window.location.href = '/dashboard';
     } else {
-      alert(data.detail || 'Login failed');
+      alert('Login failed: ' + (data.detail || 'Unknown error'));
     }
   } catch (error) {
     console.error('Login error:', error);
@@ -243,16 +265,15 @@ const handleSignUp = async (e: React.FormEvent) => {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
         </div>
 
-        {/* Grid Pattern */}
+        {/* Background Logo */}
         <div className="absolute inset-0 opacity-10">
-          <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" strokeWidth="0.5" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#grid)" />
-          </svg>
+            <Image
+              src="/images/katha-logo.png"
+              alt="Katha Logo"
+              width={400}
+              height={400}
+              className="absolute top-10 left-10 object-contain"
+            />
         </div>
 
         {/* Content */}

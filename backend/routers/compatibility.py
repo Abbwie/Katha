@@ -86,15 +86,21 @@ def get_matched_stores(all_stores: list, ai_shops: list) -> list:
 async def submit_compatibility_form(
     user_id: int = Form(...),
     user_comments: str = Form(...),
-    file: UploadFile = File(...),
+    file: UploadFile = File(None),  # File is now optional
     db: Session = Depends(get_db),
 ):
-    safe_filename = f"{user_id}_{file.filename}"
-    file_path = os.path.join(UPLOAD_DIR, safe_filename)
+    # Handle file upload - only if a file was provided
+    file_path = None
+    if file and file.filename:
+        safe_filename = f"{user_id}_{file.filename}"
+        file_path = os.path.join(UPLOAD_DIR, safe_filename)
+        with open(file_path, "wb") as f:
+            f.write(await file.read())
+        print(f"[Compatibility] File saved: {file_path}")
+    else:
+        print("[Compatibility] No file uploaded, proceeding with text only")
 
-    with open(file_path, "wb") as f:
-        f.write(await file.read())
-
+    # Create record with or without file
     record = CompatibilityForm(
         user_id=user_id,
         file_upload=file_path,
@@ -112,6 +118,7 @@ async def submit_compatibility_form(
         stores_context = load_stores_context(db)
         print(f"[Compatibility] Loaded {len(stores_context)} stores for AI context")
 
+        # Pass file_path (which may be None) to the AI function
         ai_result = analyze_compatibility_document(
             file_path=file_path,
             user_prompt=user_comments,
