@@ -46,7 +46,9 @@ const handleSignIn = async (e: React.FormEvent) => {
   
   try {
     // Use the correct API URL
-    const API_URL = 'http://localhost:8080';
+    const API_URL = typeof window !== 'undefined' && window.location.hostname === 'localhost'
+  ? 'http://localhost:8080'
+  : 'https://katha-production-0e45.up.railway.app';
     
     const response = await fetch(`${API_URL}/Katha_Login`, {
       method: 'POST',
