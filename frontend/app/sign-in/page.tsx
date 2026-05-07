@@ -272,8 +272,8 @@ const handleSignUp = async (e: React.FormEvent) => {
             <Image
               src="/images/katha-logo.png"
               alt="Katha Logo"
-              width={120}
-              height={120}
+              width={210}
+              height={210}
               className="object-contain"
             />
           </Link>
