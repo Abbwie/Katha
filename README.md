@@ -36,7 +36,7 @@ Currently it is working well as a prototype with the given providers for now.
   
   
 **Tech Stack that was use**
-- Front End : Web development using React/Tailwind CSS
+- Front End : Web development using React+Next.js/Tailwind CSS
 - Backend : Python with FastAPI as Webservice
 - Database : Railway PostgreSQL
 - Hosting Deployement : Railway for backend, Vercel For Frontend
