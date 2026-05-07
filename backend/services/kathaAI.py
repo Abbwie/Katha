@@ -236,7 +236,7 @@ def analyze_compatibility_document(
 
         parsed = json.loads(clean_json_output(raw_output))
 
-    
+        
         valid_ids = {s["id"] for s in stores_context}
         safe_shops = [
             shop for shop in parsed.get("shops", [])
