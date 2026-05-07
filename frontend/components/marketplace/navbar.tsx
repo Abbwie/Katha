@@ -58,9 +58,9 @@ export function Navbar() {
             <Image
               src="/images/katha-logo.png"
               alt="Katha Logo"
-              width={150}
-              height={150}
-              className="w-8 h-8 object-contain"
+              width={160}
+              height={160}
+              className="object-contain"
             />
           </Link>
 
