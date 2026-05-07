@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import Image from 'next/image';
 import {
   LayoutDashboard,
   Package,
@@ -87,20 +88,21 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         )}
       >
         {/* Logo */}
-        <div className={cn('flex items-center h-16 px-4 border-b border-sidebar-border', collapsed ? 'justify-center' : 'gap-3')}>
-          <Link href="/" className="flex items-center gap-2">
-            <Network className="w-8 h-8 text-sidebar-primary" />
-            {!collapsed && <span className="text-xl font-bold">Katha</span>}
+        <div
+          className={cn(
+            'flex items-center h-16 px-4 border-b border-sidebar-border',
+            collapsed ? 'justify-center' : 'gap-3'
+          )}
+        >
+          <Link href="/" className="flex items-center">
+            <Image
+              src="/images/katha-logo.png"
+              alt="Katha Logo"
+              width={collapsed ? 45 : 180}
+              height={collapsed ? 45 : 180}
+              className="object-contain"
+            />
           </Link>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="lg:hidden ml-auto text-sidebar-foreground hover:bg-sidebar-accent"
-            onClick={() => setMobileOpen(false)}
-          >
-            <X className="w-5 h-5" />
-          </Button>
-        </div>
 
         {/* Navigation */}
         <nav className="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
