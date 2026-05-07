@@ -135,7 +135,7 @@ def analyze_compatibility_document(
     stores_text = build_stores_text(stores_context)
     system_msg = build_system_prompt()
 
-    # Handle text-only requests (no file uploaded)
+    
     if not file_path:
         print(f"[KathaAI] Text-only analysis for: {user_prompt}")
         
@@ -181,13 +181,13 @@ def analyze_compatibility_document(
                 "total_tokens_used": 0,
             }
 
-    # Handle file-based requests (with uploaded file)
+    
     ext = os.path.splitext(file_path)[1].lower()
     is_image = ext in IMAGE_EXTENSIONS
 
     try:
         if is_image:
-            # For images: AI sees the image + store list
+            
             base64_image = encode_image_to_base64(file_path)
             mime_type = get_image_mime_type(file_path)
             task_prompt = build_task_prompt(user_prompt, stores_text)
@@ -210,7 +210,7 @@ def analyze_compatibility_document(
             ]
 
         else:
-            # For documents: extract text and pass as file summary
+            
             file_content = extract_text_from_file(file_path) or ""
             truncated = file_content[:4000]
             if len(file_content) > 4000:
@@ -236,7 +236,7 @@ def analyze_compatibility_document(
 
         parsed = json.loads(clean_json_output(raw_output))
 
-        # Safety check: remove any shops not in the original store list
+    
         valid_ids = {s["id"] for s in stores_context}
         safe_shops = [
             shop for shop in parsed.get("shops", [])
