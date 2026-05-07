@@ -127,16 +127,63 @@ Return this exact JSON structure:
 
 
 def analyze_compatibility_document(
-    file_path: str,
-    user_prompt: str,
+    file_path: str = None,
+    user_prompt: str = "",
     stores_context: list = []
 ) -> dict:
 
-    ext = os.path.splitext(file_path)[1].lower()
-    is_image = ext in IMAGE_EXTENSIONS
-
     stores_text = build_stores_text(stores_context)
     system_msg = build_system_prompt()
+
+    # Handle text-only requests (no file uploaded)
+    if not file_path:
+        print(f"[KathaAI] Text-only analysis for: {user_prompt}")
+        
+        task_prompt = build_task_prompt(user_prompt, stores_text, "")
+        
+        messages = [
+            {"role": "system", "content": system_msg},
+            {"role": "user", "content": task_prompt}
+        ]
+        
+        try:
+            response = client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=messages,
+                response_format={"type": "json_object"},
+                temperature=0.1,
+                max_tokens=1000,
+            )
+            
+            raw_output = response.choices[0].message.content or ""
+            print(f"[KathaAI] Raw output: {repr(raw_output[:400])}")
+            
+            parsed = json.loads(clean_json_output(raw_output))
+            
+            valid_ids = {s["id"] for s in stores_context}
+            safe_shops = [
+                shop for shop in parsed.get("shops", [])
+                if shop.get("store_id") in valid_ids
+            ]
+            
+            return {
+                "ai_comments": parsed.get("ai_comments", ""),
+                "needed_items": parsed.get("needed_items", []),
+                "shops": safe_shops,
+                "total_tokens_used": response.usage.total_tokens if response.usage else 0,
+            }
+        except Exception as e:
+            print(f"[KathaAI] Text-only error: {str(e)}")
+            return {
+                "ai_comments": f"Based on your request '{user_prompt}', we recommend browsing our marketplace. For better recommendations, please upload a document with your specifications.",
+                "needed_items": ["Detailed specifications", "Budget information", "Timeline"],
+                "shops": [],
+                "total_tokens_used": 0,
+            }
+
+    # Handle file-based requests (with uploaded file)
+    ext = os.path.splitext(file_path)[1].lower()
+    is_image = ext in IMAGE_EXTENSIONS
 
     try:
         if is_image:
@@ -180,7 +227,7 @@ def analyze_compatibility_document(
             model="gpt-4o-mini",
             messages=messages,
             response_format={"type": "json_object"},
-            temperature=0.1,        # ← lower = less creative = less hallucination
+            temperature=0.1,
             max_tokens=1000,
         )
 
@@ -199,7 +246,7 @@ def analyze_compatibility_document(
         return {
             "ai_comments": parsed.get("ai_comments", ""),
             "needed_items": parsed.get("needed_items", []),
-            "shops": safe_shops,    # ← only real store IDs pass through
+            "shops": safe_shops,
             "total_tokens_used": response.usage.total_tokens if response.usage else 0,
         }
 
@@ -207,5 +254,7 @@ def analyze_compatibility_document(
         print(f"[KathaAI] Error: {str(e)}")
         return {
             "ai_comments": f"AI failed: {str(e)}",
-            "needed_items": [], "shops": [], "total_tokens_used": 0,
+            "needed_items": [],
+            "shops": [],
+            "total_tokens_used": 0,
         }
