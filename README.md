@@ -35,7 +35,7 @@ so you wont have to manually scroll for shops just for your product.
 Currently it is working well as a prototype with the given providers for now.
   
   
-**Stack that was use**
+**Tech Stack that was use**
 - Front End : Web development using React/Tailwind CSS
 - Backend : Python with FastAPI as Webservice
 - Database : Railway PostgreSQL
