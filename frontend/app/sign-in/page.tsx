@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import Image from 'next/image';
 
 export default function SignInPage() {
   const [activeTab, setActiveTab] = useState<'signin' | 'signup'>('signin');
@@ -266,7 +267,7 @@ const handleSignUp = async (e: React.FormEvent) => {
 
         {/* Grid Pattern */}
         <div className="absolute inset-0 opacity-10">
-          <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+          <Image src="/images/katha-logo.png" alt="Katha Logo"></Image>
             <defs>
               <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
                 <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" strokeWidth="0.5" />
