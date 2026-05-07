@@ -46,7 +46,7 @@ export function ProviderCard({
           >
             <Heart
               className={`w-4 h-4 ${
-                isFavorite ? 'fill-red-500 text-red-500' : 'text-muted-foreground'
+                isFavorite ? 'fill-destructive text-destructive' : 'text-muted-foreground'
               }`}
             />
           </Button>

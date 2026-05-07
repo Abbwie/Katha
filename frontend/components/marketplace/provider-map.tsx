@@ -159,7 +159,7 @@ export function ProviderMap({
                   isSelected
                     ? 'bg-accent text-accent-foreground'
                     : isFavorite
-                    ? 'bg-red-500 text-white'
+                    ? 'bg-destructive text-destructive-foreground'
                     : 'bg-primary text-primary-foreground'
                 }`}
               >
@@ -171,7 +171,7 @@ export function ProviderMap({
                   isSelected
                     ? 'border-t-accent'
                     : isFavorite
-                    ? 'border-t-red-500'
+                    ? 'border-t-destructive'
                     : 'border-t-primary'
                 }`}
               />

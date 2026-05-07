@@ -20,31 +20,31 @@ const statusConfig = {
   'quote-requested': {
     icon: Clock,
     label: 'Quote Requested',
-    color: 'bg-blue-500',
+    color: 'bg-primary',
     variant: 'default' as const,
   },
   'quote-provided': {
     icon: AlertCircle,
     label: 'Quote Provided',
-    color: 'bg-yellow-500',
+    color: 'bg-secondary',
     variant: 'secondary' as const,
   },
   'accepted': {
     icon: CheckCircle2,
     label: 'Quote Accepted',
-    color: 'bg-purple-500',
+    color: 'bg-accent',
     variant: 'default' as const,
   },
   'in-progress': {
     icon: Clock,
     label: 'In Progress',
-    color: 'bg-blue-500',
+    color: 'bg-primary',
     variant: 'default' as const,
   },
   'completed': {
     icon: CheckCircle2,
     label: 'Completed',
-    color: 'bg-green-500',
+    color: 'bg-success',
     variant: 'default' as const,
   },
 };
