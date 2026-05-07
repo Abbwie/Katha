@@ -265,16 +265,15 @@ const handleSignUp = async (e: React.FormEvent) => {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
         </div>
 
-        {/* Grid Pattern */}
+        {/* Background Logo */}
         <div className="absolute inset-0 opacity-10">
-          <Image src="/images/katha-logo.png" alt="Katha Logo"></Image>
-            <defs>
-              <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" strokeWidth="0.5" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#grid)" />
-          </svg>
+            <Image
+              src="/images/katha-logo.png"
+              alt="Katha Logo"
+              width={400}
+              height={400}
+              className="absolute top-10 left-10 object-contain"
+            />
         </div>
 
         {/* Content */}
