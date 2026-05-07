@@ -35,10 +35,10 @@ Currently it is working well as a prototype with the given providers for now.
   
   
 **Stack that was use**
-Front End : Web development using React
-Backend : Python with FastAPI as Webservice
-Database : Railway PostgreSQL
-Hosting Deployement : Railway for backend, Vercel For Frontend
+- Front End : Web development using React
+- Backend : Python with FastAPI as Webservice
+- Database : Railway PostgreSQL
+- Hosting Deployement : Railway for backend, Vercel For Frontend
 
 **Future Improvements**
 Katha right now is not perfect but it has a great potential especially in the market right now, here are the things we can expound on later on:
