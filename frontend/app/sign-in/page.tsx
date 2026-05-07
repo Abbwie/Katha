@@ -265,23 +265,17 @@ const handleSignUp = async (e: React.FormEvent) => {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
         </div>
 
-        {/* Background Logo */}
-        <div className="absolute inset-0 opacity-10">
-            <Image
-              src="/images/katha-logo.png"
-              alt="Katha Logo"
-              width={400}
-              height={400}
-              className="absolute top-10 left-10 object-contain"
-            />
-        </div>
-
         {/* Content */}
         <div className="relative z-10 flex flex-col justify-between p-12 text-sidebar-foreground">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <Network className="w-8 h-8" />
-            <span className="text-2xl font-bold">Katha</span>
+          <Link href="/" className="flex items-center">
+            <Image
+              src="/images/katha-logo.png"
+              alt="Katha Logo"
+              width={120}
+              height={120}
+              className="object-contain"
+            />
           </Link>
 
           {/* Main Content */}
@@ -340,10 +334,15 @@ const handleSignUp = async (e: React.FormEvent) => {
 
         <div className="w-full max-w-md relative z-10">
           {/* Mobile Logo */}
-          <Link href="/" className="flex items-center gap-2 mb-8 lg:hidden">
-            <Network className="w-6 h-6 text-accent" />
-            <span className="text-xl font-bold text-foreground">Katha</span>
-          </Link>
+        <Link href="/" className="flex items-center mb-8 lg:hidden">
+          <Image
+            src="/images/katha-logo.png"
+            alt="Katha Logo"
+            width={100}
+            height={100}
+            className="object-contain"
+          />
+        </Link>
 
           <Card className="border-border/50 shadow-xl">
             <CardHeader className="text-center pb-2">
