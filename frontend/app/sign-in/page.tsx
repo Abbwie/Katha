@@ -80,7 +80,7 @@ const handleSignIn = async (e: React.FormEvent) => {
       console.log('Stored username:', localStorage.getItem('username'));
       
       // STEP 4: Show success message
-      alert(`Welcome ${data.full_name || data.username || data.email}! Data saved to localStorage.`);
+      alert(`Welcome ${data.full_name || data.username || data.email}!`);
       
       // STEP 5: Go to dashboard (uncomment after testing)
       window.location.href = '/dashboard';
