@@ -15,7 +15,7 @@ Katha aims to support local talent, make tech work more visibile, and help grow 
 - Support local Filipino tech providers
 - Improving visibility for skilled professionals in the tech community
 - Making tech services more accessible to wider audience
-- Encouraging growth and collaboration within the local tech ecosystem,
+- Encouraging growth and collaboration within the local tech ecosystem.
 
 
 **Main Features Of Katha**
