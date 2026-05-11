@@ -5,7 +5,7 @@ https://v0-katha-delta.vercel.app/
 Katha is a marketplace for Local Filipino tech providers and makers. 
 
 Our team Git It Together, saw how this type of market in the Philippines is hard to reach and often only seen when someone refers it to them.
-It is sad because right now, with the rise of technology and AI, these things are suppose to be in high demand and deemed more accessible. 
+It's sad because right now, with the rise of technology and AI, these things are suppose to be in high demand and deemed more accessible. 
 That is one of the reasons why we made Katha.
 
 Katha aims to support local talent, make tech work more visibile, and help grow the Filipino tech community by creating a more accessible and connected platform.
